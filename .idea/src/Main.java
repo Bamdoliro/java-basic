@@ -1,24 +1,24 @@
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 class Attacker {
     private static Scanner n = new Scanner(System.in);
     public String name;
+    int count = 5;
     String[] ball = new String[5];
-
-    int total=5;
-
     public Attacker(String name) {
         this.name = name;
     }
 
+    public String getName(){
+        return name;
+    }
+
     public void scanBall() {
         String balls = n.nextLine();
-
-        String[] number = balls.split(",");
-
-        for (int i = 0; i < number.length; i++) {
-            ball[i] = number[i];
-        }
+        ball = balls.split(",");
     }
 }
 
@@ -27,54 +27,69 @@ class Goalkeeper {
     public String name;
     String[] ball = new String[4];
 
-
     public Goalkeeper(String name) {
         this.name = name;
     }
 
     public void scanBall() {
         String balls = n.nextLine();
-
-        String[] number = balls.split(",");
-
-        for (int i = 0; i < number.length; i++) {
-            ball[i] = number[i];
-        }
+        ball = balls.split(",");
     }
 }
 
 public class Main {
     public static void main(String[] args) {
-        Attacker attacker1 = new Attacker("attacker1");
-        Attacker attacker2 = new Attacker("attacker2");
-        Goalkeeper goalkeeper = new Goalkeeper("goalkeeper");
+        Attacker[] attackerArray = {new Attacker("attacker1"), new Attacker("attacker2")};
+        int flag = 0;
+        ArrayList<Attacker> attackers = Arrays.stream(attackerArray)
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        attacker1.scanBall();
-        attacker2.scanBall();
-        goalkeeper.scanBall();
+        Goalkeeper[] goalkeeperArray = {new Goalkeeper("goalkeeper")};
 
-        for(int i=0; i<attacker1.ball.length; i++) {
-            for(int j=0; j<goalkeeper.ball.length; j++) {
-                if(attacker1.ball[i].equals(goalkeeper.ball[j])) {
-                    attacker1.total --;
+        ArrayList<Goalkeeper> goalkeepers = Arrays.stream(goalkeeperArray)
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        for (Attacker attacker : attackers) {
+            attacker.scanBall();
+        }
+
+        for (Goalkeeper goalkeeper : goalkeepers) {
+            goalkeeper.scanBall();
+        }
+
+        for(int i = 0; i < 5; i++) {
+            flag=0;
+            for(int j=0; j<4; j++){
+                if(attackerArray[0].ball[i].equals(goalkeeperArray[0].ball[j])){
+                    flag = 1;
+                    break;
                 }
             }
-        }
-        for(int i=0; i<attacker2.ball.length; i++) {
-            for(int j=0; j<goalkeeper.ball.length; j++) {
-                if(attacker2.ball[i].equals(goalkeeper.ball[j])) {
-                    attacker2.total --;
-                }
+            if(flag==1){
+                attackerArray[0].count--;
             }
         }
-        if(attacker1.total>attacker2.total){
-            System.out.println("1번 승리");
-        } else if (attacker1.total<attacker2.total) {
-            System.out.println("2번 승리");
+        for(int i = 0; i < 5; i++) {
+            flag=0;
+            for(int j=0; j<4; j++){
+                if(attackerArray[1].ball[i].equals(goalkeeperArray[0].ball[j])){
+                    flag = 1;
+                    break;
+                }
+            }
+            if(flag==1){
+                attackerArray[1].count--;
+            }
+        }
+        if(attackerArray[0].count>attackerArray[1].count){
+            System.out.println(attackerArray[0].getName() + "님이 승리");
+        }else if(attackerArray[1].count>attackerArray[0].count){
+            System.out.println(attackerArray[1].getName() + "님이 승리");
         }else{
             System.out.println("무승부");
         }
-    }
-}
 
+    }
+
+}
 
